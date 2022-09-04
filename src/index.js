@@ -5,8 +5,16 @@ const typeDefs = `
        age: Int!
        employed: Boolean!
        gpa: Float,
+       greeting(name: String): String!
        id: ID!
+       me: User!
        name: String!
+    }
+
+    type User {
+        firstName: String!
+        id: ID!
+        lastName: String!
     }
 `;
 
@@ -21,8 +29,14 @@ const resolvers = {
     gpa() {
       return 3.72;
     },
+    greeting(parent, args, ctx, info) {
+      return args.name ? `Hello ${args.name}!` : "Hello World!";
+    },
     id() {
       return "ABC123";
+    },
+    me() {
+      return { firstName: "Tim", id: "ABC123", lastName: "Zabawa" };
     },
     name() {
       return "Tim Zabawa";
