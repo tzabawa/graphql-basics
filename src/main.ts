@@ -1,6 +1,14 @@
 import { GraphQLServer } from "graphql-yoga";
 
-const demoUsersData = [
+type User = {
+  age?: number;
+  email: string;
+  firstName: string;
+  id: number;
+  lastName: string;
+};
+
+const demoUsersData: User[] = [
   {
     age: 31,
     email: "tim@example.com",
@@ -49,45 +57,45 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
-    add(parent, args, ctx, info) {
+    add(_: Record<any, any>, args: { numbers: number[] }): number {
       return args.numbers.length
         ? args.numbers.reduce((agg, number) => {
             return (agg += number);
           }, 0)
         : 0;
     },
-    age() {
+    age(): number {
       return 31;
     },
-    employed() {
+    employed(): boolean {
       return true;
     },
-    gpa() {
+    gpa(): number {
       return 3.72;
     },
-    grades(parent, args, ctx, info) {
+    grades(): number[] {
       return [99, 80, 93];
     },
-    greeting(parent, args, ctx, info) {
+    greeting(_: Record<any, any>, args: { name: string }): string {
       return args.name ? `Hello ${args.name}!` : "Hello World!";
     },
-    id() {
+    id(): string {
       return "ABC123";
     },
-    me() {
+    me(): { firstName: string; id: string; lastName: string } {
       return { firstName: "Tim", id: "ABC123", lastName: "Zabawa" };
     },
-    name() {
+    name(): string {
       return "Tim Zabawa";
     },
-    subtract(parent, args, ctx, info) {
+    subtract(_: Record<any, any>, args: { numbers: number[] }): number {
       return args.numbers.length
         ? args.numbers.reduce((agg, number) => {
             return (agg -= number);
           }, 0)
         : 0;
     },
-    users(parent, args, ctx, info) {
+    users(_: Record<any, any>, args: { query: string }): User[] {
       return args.query
         ? demoUsersData.filter((demoUserData) =>
             `${demoUserData.firstName.toLowerCase()} ${demoUserData.lastName.toLowerCase()}`.includes(
