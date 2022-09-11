@@ -1,7 +1,7 @@
 import { GraphQLServer } from "graphql-yoga";
 import { Post, User } from "./types";
 
-const demoPostData: Post[] = [
+const demoPostsData: Post[] = [
   {
     author: "1",
     body: "Body 1",
@@ -108,7 +108,7 @@ const resolvers = {
       return "Tim Zabawa";
     },
     posts(): Post[] {
-      return demoPostData;
+      return demoPostsData;
     },
     subtract(parent: Record<any, any>, args: { numbers: number[] }): number {
       return args.numbers.length
@@ -129,7 +129,9 @@ const resolvers = {
   },
   Post: {
     author(parent: Record<any, any>) {
-      return users.find((user) => user.id === parent.author);
+      return demoUsersData.find(
+        (demoUserData) => demoUserData.id === parent.author
+      );
     },
   },
 };
