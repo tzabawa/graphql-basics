@@ -1,32 +1,42 @@
 import { GraphQLServer } from "graphql-yoga";
+import { Post, User } from "./types";
 
-type User = {
-  age?: number;
-  email: string;
-  firstName: string;
-  id: number;
-  lastName: string;
-};
+const demoPostData: Post[] = [
+  {
+    author: "1",
+    body: "Body 1",
+    id: "1",
+    published: true,
+    title: "Title 1",
+  },
+  {
+    author: "2",
+    body: "Body 2",
+    id: "2",
+    published: true,
+    title: "Title 2",
+  },
+];
 
 const demoUsersData: User[] = [
   {
     age: 31,
     email: "tim@example.com",
     firstName: "Tim",
-    id: 1,
+    id: "1",
     lastName: "Zabawa",
   },
   {
     email: "chris@example.com",
     firstName: "Chris",
-    id: 2,
+    id: "2",
     lastName: "Zabawa",
   },
   {
     age: 33,
     email: "pat@example.com",
     firstName: "Pat",
-    id: 3,
+    id: "3",
     lastName: "Zabawa",
   },
 ];
@@ -42,8 +52,17 @@ const typeDefs = `
       id: ID!
       me: User!
       name: String!
+      posts: [Post!]!
       subtract(numbers: [Float!]!): Float
       users(query: String): [User!]!
+    }
+
+    type Post {
+      author: User!
+      body: String!
+      id: ID!
+      published: Boolean!
+      title: String!
     }
 
     type User {
@@ -76,7 +95,7 @@ const resolvers = {
     grades(): number[] {
       return [99, 80, 93];
     },
-    greeting(_: Record<any, any>, args: { name: string }): string {
+    greeting(parent: Record<any, any>, args: { name: string }): string {
       return args.name ? `Hello ${args.name}!` : "Hello World!";
     },
     id(): string {
@@ -88,14 +107,17 @@ const resolvers = {
     name(): string {
       return "Tim Zabawa";
     },
-    subtract(_: Record<any, any>, args: { numbers: number[] }): number {
+    posts(): Post[] {
+      return demoPostData;
+    },
+    subtract(parent: Record<any, any>, args: { numbers: number[] }): number {
       return args.numbers.length
         ? args.numbers.reduce((agg, number) => {
             return (agg -= number);
           }, 0)
         : 0;
     },
-    users(_: Record<any, any>, args: { query: string }): User[] {
+    users(parent: Record<any, any>, args: { query: string }): User[] {
       return args.query
         ? demoUsersData.filter((demoUserData) =>
             `${demoUserData.firstName.toLowerCase()} ${demoUserData.lastName.toLowerCase()}`.includes(
@@ -105,6 +127,11 @@ const resolvers = {
         : demoUsersData;
     },
   },
+  Post: {
+    author(parent: Record<any, any>) {
+      return users.find((user) => user.id === parent.author);
+    },
+  },
 };
 
 const server = new GraphQLServer({
@@ -112,4 +139,4 @@ const server = new GraphQLServer({
   resolvers,
 });
 
-server.start(() => console.log("The server is up!"));
+server.start(() => console.log("The server is up on port 4000!"));
