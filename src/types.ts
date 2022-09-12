@@ -1,3 +1,8 @@
+export type Comment = {
+  id: string;
+  text: string;
+};
+
 export type Post = {
   author: string;
   body: string;

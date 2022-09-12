@@ -1,5 +1,20 @@
 import { GraphQLServer } from "graphql-yoga";
-import { Post, User } from "./types";
+import { Comment, Post, User } from "./types";
+
+const demoCommentsData: Comment[] = [
+  {
+    id: "1",
+    text: "Comment 1",
+  },
+  {
+    id: "2",
+    text: "Comment 2",
+  },
+  {
+    id: "3",
+    text: "Comment 3",
+  },
+];
 
 const demoPostsData: Post[] = [
   {
@@ -48,6 +63,7 @@ const typeDefs = `
     type Query {
       add(numbers: [Float!]!): Float
       age: Int!
+      comments: [Comment!]!
       employed: Boolean!
       gpa: Float,
       grades: [Int]!
@@ -58,6 +74,11 @@ const typeDefs = `
       posts: [Post!]!
       subtract(numbers: [Float!]!): Float
       users(query: String): [User!]!
+    }
+
+    type Comment {
+      id: ID!
+      text: String!
     }
 
     type Post {
@@ -89,6 +110,9 @@ const resolvers = {
     },
     age(): number {
       return 31;
+    },
+    comments(): Comment[] {
+      return demoCommentsData;
     },
     employed(): boolean {
       return true;
