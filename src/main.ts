@@ -3,14 +3,17 @@ import { Comment, Post, User } from "./types";
 
 const demoCommentsData: Comment[] = [
   {
+    author: "2",
     id: "1",
     text: "Comment 1",
   },
   {
+    author: "2",
     id: "2",
     text: "Comment 2",
   },
   {
+    author: "3",
     id: "3",
     text: "Comment 3",
   },
@@ -40,14 +43,12 @@ const demoUsersData: User[] = [
     firstName: "Tim",
     id: "1",
     lastName: "Zabawa",
-    posts: [],
   },
   {
     email: "chris@example.com",
     firstName: "Chris",
     id: "2",
     lastName: "Zabawa",
-    posts: ["1"],
   },
   {
     age: 33,
@@ -55,7 +56,6 @@ const demoUsersData: User[] = [
     firstName: "Pat",
     id: "3",
     lastName: "Zabawa",
-    posts: ["2"],
   },
 ];
 
@@ -77,6 +77,7 @@ const typeDefs = `
     }
 
     type Comment {
+      author: User!
       id: ID!
       text: String!
     }
@@ -91,6 +92,7 @@ const typeDefs = `
 
     type User {
         age: Int
+        comments: [Comment!]!
         email: String!
         firstName: String!
         id: ID!
@@ -155,6 +157,13 @@ const resolvers = {
         : demoUsersData;
     },
   },
+  Comment: {
+    author(parent: Record<any, any>) {
+      return demoUsersData.find(
+        (demoUserData) => demoUserData.id === parent.author
+      );
+    },
+  },
   Post: {
     author(parent: Record<any, any>) {
       return demoUsersData.find(
@@ -163,9 +172,14 @@ const resolvers = {
     },
   },
   User: {
+    comments(parent: Record<any, any>) {
+      return demoCommentsData.filter(
+        (demoCommentData) => demoCommentData.author === parent.id
+      );
+    },
     posts(parent: Record<any, any>) {
-      return demoPostsData.filter((demoPostData) =>
-        parent.posts.includes(demoPostData.id)
+      return demoPostsData.filter(
+        (demoPostData) => demoPostData.author === parent.id
       );
     },
   },

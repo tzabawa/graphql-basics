@@ -1,4 +1,5 @@
 export type Comment = {
+  author: string;
   id: string;
   text: string;
 };
@@ -17,5 +18,4 @@ export type User = {
   firstName: string;
   id: string;
   lastName: string;
-  posts: string[];
 };
