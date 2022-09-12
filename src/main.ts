@@ -25,12 +25,14 @@ const demoUsersData: User[] = [
     firstName: "Tim",
     id: "1",
     lastName: "Zabawa",
+    posts: [],
   },
   {
     email: "chris@example.com",
     firstName: "Chris",
     id: "2",
     lastName: "Zabawa",
+    posts: ["1"],
   },
   {
     age: 33,
@@ -38,6 +40,7 @@ const demoUsersData: User[] = [
     firstName: "Pat",
     id: "3",
     lastName: "Zabawa",
+    posts: ["2"],
   },
 ];
 
@@ -71,6 +74,7 @@ const typeDefs = `
         firstName: String!
         id: ID!
         lastName: String!
+        posts: [Post!]!
     }
 `;
 
@@ -131,6 +135,13 @@ const resolvers = {
     author(parent: Record<any, any>) {
       return demoUsersData.find(
         (demoUserData) => demoUserData.id === parent.author
+      );
+    },
+  },
+  User: {
+    posts(parent: Record<any, any>) {
+      return demoPostsData.filter((demoPostData) =>
+        parent.posts.includes(demoPostData.id)
       );
     },
   },

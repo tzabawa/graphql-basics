@@ -12,4 +12,5 @@ export type User = {
   firstName: string;
   id: string;
   lastName: string;
+  posts: string[];
 };
